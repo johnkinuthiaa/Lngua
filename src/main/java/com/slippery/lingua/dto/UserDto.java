@@ -6,6 +6,7 @@ import com.slippery.lingua.models.Users;
 import lombok.Data;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,4 +16,5 @@ public class UserDto {
     private int statusCode;
     private Users user;
     private List<Users> usersList;
+    private int authToken;
 }
