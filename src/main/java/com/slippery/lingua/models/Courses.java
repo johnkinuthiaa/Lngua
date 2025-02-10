@@ -27,7 +27,6 @@ public class Courses {
     @JsonIgnore
     @ManyToMany
     private List<Users> usersEnrolled;
-
     @OneToMany
     private List<Lesson> lessonsInCourse;
     private LocalDateTime createdOn =LocalDateTime.now();

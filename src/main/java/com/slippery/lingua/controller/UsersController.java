@@ -26,4 +26,28 @@ public class UsersController {
     public ResponseEntity<UserDto> unEnrollUserFromCourse(@RequestParam Long UserId, @RequestParam Long courseId) {
         return ResponseEntity.ok(service.unEnrollUserFromCourse(UserId, courseId));
     }
+    @GetMapping("/enrolled/courses")
+    public ResponseEntity<UserDto> getAllUserEnrolledCourses(@RequestParam Long id){
+        return ResponseEntity.ok(service.getAllUserEnrolledCourses(id));
+    }
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody Users userDetails){
+        return ResponseEntity.ok(service.login(userDetails));
+    }
+
+    @GetMapping("/{id}/get")
+    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<UserDto> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDto> update(@RequestParam Long id,@RequestBody Users userDetails) {
+        return ResponseEntity.ok(service.update(id, userDetails));
+    }
+
 }

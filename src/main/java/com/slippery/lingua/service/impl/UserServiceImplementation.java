@@ -110,6 +110,22 @@ public class UserServiceImplementation implements UsersService {
     }
 
     @Override
+    public UserDto getAllUserEnrolledCourses(Long id) {
+        UserDto response =new UserDto();
+        Optional<Users> existingUser =repository.findById(id);
+        if(existingUser.isEmpty()){
+            response.setMessage("User not found!");
+            response.setStatusCode(404);
+            return response;
+        }
+        response.setCoursesList(existingUser.get().getCoursesEnrolled());
+        response.setMessage("All courses for "+existingUser.get().getUsername());
+        response.setStatusCode(200);
+
+        return response;
+    }
+
+    @Override
     public UserDto enrollUserToCourse(Long UserId, Long courseId) {
         Optional<Users> existingUser =repository.findById(UserId);
         UserDto response =new UserDto();
