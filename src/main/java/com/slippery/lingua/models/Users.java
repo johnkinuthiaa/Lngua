@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -27,4 +28,7 @@ public class Users {
     private Boolean isActive;
     private Long streak;
     private String role;
+    @ManyToMany
+    private List<Courses> coursesEnrolled;
+
 }

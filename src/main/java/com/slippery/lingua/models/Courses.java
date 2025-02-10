@@ -25,7 +25,7 @@ public class Courses {
     private String description;
     private String level;
     @JsonIgnore
-    @OneToMany
+    @ManyToMany
     private List<Users> usersEnrolled;
 
     @OneToMany

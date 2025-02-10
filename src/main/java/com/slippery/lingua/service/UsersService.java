@@ -8,5 +8,7 @@ public interface UsersService {
     UserDto login(Users userDetails);
     UserDto findById(Long id);
     UserDto deleteById(Long id);
+    UserDto enrollUserToCourse(Long UserId,Long courseId);
+    UserDto unEnrollUserFromCourse(Long UserId,Long courseId);
     UserDto update(Long id,Users userDetails);
 }

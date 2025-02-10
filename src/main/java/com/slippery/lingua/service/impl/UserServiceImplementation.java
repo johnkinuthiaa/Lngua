@@ -2,7 +2,9 @@ package com.slippery.lingua.service.impl;
 
 import com.slippery.lingua.dto.UserDto;
 import com.slippery.lingua.exceptions.UserAlreadyExists;
+import com.slippery.lingua.models.Courses;
 import com.slippery.lingua.models.Users;
+import com.slippery.lingua.repository.CoursesRepository;
 import com.slippery.lingua.repository.UserRepository;
 import com.slippery.lingua.service.UsersService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -20,11 +23,13 @@ public class UserServiceImplementation implements UsersService {
     private final AuthenticationTokenService authenticationTokenService;
     private final PasswordEncoder passwordEncoder =new BCryptPasswordEncoder(12);
     private final AuthenticationManager authenticationManager;
+    private final CoursesRepository coursesRepository;
 
-    public UserServiceImplementation(UserRepository repository, AuthenticationTokenService authenticationTokenService, AuthenticationManager authenticationManager) {
+    public UserServiceImplementation(UserRepository repository, AuthenticationTokenService authenticationTokenService, AuthenticationManager authenticationManager, CoursesRepository coursesRepository) {
         this.repository = repository;
         this.authenticationTokenService = authenticationTokenService;
         this.authenticationManager = authenticationManager;
+        this.coursesRepository = coursesRepository;
     }
 
     @Override
@@ -40,9 +45,12 @@ public class UserServiceImplementation implements UsersService {
 //        send token to email
 
         userDetails.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        userDetails.setCoursesEnrolled(new ArrayList<>());
         userDetails.setStreak(0L);
         repository.save(userDetails);
         response.setMessage("User registered successfully");
+        response.setStatusCode(200);
+        response.setAuthToken(token);
         return response;
     }
 
@@ -98,6 +106,66 @@ public class UserServiceImplementation implements UsersService {
         response.setMessage("User deleted successfully");
         response.setStatusCode(200);
 
+        return response;
+    }
+
+    @Override
+    public UserDto enrollUserToCourse(Long UserId, Long courseId) {
+        Optional<Users> existingUser =repository.findById(UserId);
+        UserDto response =new UserDto();
+        Optional<Courses> existingCourse =coursesRepository.findById(courseId);
+        if(existingCourse.isEmpty()){
+            response.setMessage("Course does not exist");
+            response.setStatusCode(404);
+            return response;
+        }
+        if(existingUser.isEmpty()){
+            response.setMessage("User does not exist");
+            response.setStatusCode(404);
+            return response;
+        }
+        var membersEnrolledToCourse =existingCourse.get().getUsersEnrolled();
+        var coursesByUser =existingUser.get().getCoursesEnrolled();
+
+        membersEnrolledToCourse.add(existingUser.get());
+        coursesByUser.add(existingCourse.get());
+
+        coursesRepository.save(existingCourse.get());
+        repository.save(existingUser.get());
+        response.setMessage("User enrolled to "+ existingCourse.get().getName());
+        response.setStatusCode(200);
+        return response;
+    }
+
+    @Override
+    public UserDto unEnrollUserFromCourse(Long UserId, Long courseId) {
+        Optional<Courses> existingCourse =coursesRepository.findById(courseId);
+        Optional<Users> existingUser =repository.findById(UserId);
+        UserDto response =new UserDto();
+
+        if(existingUser.isEmpty()){
+            response.setMessage("User does not exist");
+            response.setStatusCode(404);
+            return response;
+        }
+        if(existingCourse.isEmpty()){
+            response.setMessage("Course does not exist");
+            response.setStatusCode(404);
+            return response;
+        }
+        var membersEnrolledToCourse =existingCourse.get().getUsersEnrolled();
+        var coursesByUser =existingUser.get().getCoursesEnrolled();
+        if(!membersEnrolledToCourse.contains(existingUser.get())){
+            response.setMessage("User is not enrolled in the course");
+            response.setStatusCode(200);
+            return response;
+        }
+        membersEnrolledToCourse.remove(existingUser.get());
+        coursesByUser.remove(existingCourse.get());
+        coursesRepository.save(existingCourse.get());
+        repository.save(existingUser.get());
+        response.setMessage("User was un-enrolled from "+existingCourse.get().getName());
+        response.setStatusCode(200);
         return response;
     }
 
