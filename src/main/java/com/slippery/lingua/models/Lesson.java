@@ -21,6 +21,8 @@ public class Lesson {
     private String resources;
     @Lob
     private String content;
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn =LocalDateTime.now();
     private LocalDateTime updatedOn;
+    @ManyToOne
+    private Courses course;
 }

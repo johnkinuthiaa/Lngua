@@ -1,0 +1,21 @@
+package com.slippery.lingua.controller;
+
+import com.slippery.lingua.dto.LessonDto;
+import com.slippery.lingua.models.Lesson;
+import com.slippery.lingua.service.LessonService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/lessons")
+public class LessonController {
+    private final LessonService service;
+
+    public LessonController(LessonService service) {
+        this.service = service;
+    }
+    @PostMapping("/create")
+    public ResponseEntity<LessonDto> createNewLesson(@RequestBody Lesson lesson, @RequestParam Long courseId) {
+        return ResponseEntity.ok(service.createNewLesson(lesson, courseId));
+    }
+}
