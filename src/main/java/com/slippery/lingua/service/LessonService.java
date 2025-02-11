@@ -5,6 +5,7 @@ import com.slippery.lingua.models.Lesson;
 
 public interface LessonService {
     LessonDto createNewLesson(Lesson lessonDetails,Long courseId);
+    LessonDto removeLessonFromCourse(Long lessonId,Long courseId);
     LessonDto updateLesson(Lesson lesson,Long lessonId);
     LessonDto findLessonById(Long lessonId);
     LessonDto deleteLessonById(Long lessonId);

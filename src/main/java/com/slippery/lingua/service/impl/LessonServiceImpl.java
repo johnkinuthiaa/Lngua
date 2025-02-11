@@ -42,6 +42,39 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public LessonDto removeLessonFromCourse(Long lessonId, Long courseId) {
+        LessonDto response =new LessonDto();
+        Optional<Courses> existingCourse =coursesRepository.findById(courseId);
+        Optional<Lesson> existingLesson =repository.findById(lessonId);
+        if(existingCourse.isEmpty()){
+            response.setMessage("Course not found!");
+            response.setStatusCode(404);
+            return response;
+        }
+        if(existingLesson.isEmpty()){
+            response.setMessage("lesson not found!");
+            response.setStatusCode(404);
+            return response;
+        }
+        var lessonsInCourse =existingCourse.get().getLessonsInCourse();
+
+        if(!lessonsInCourse.contains(existingLesson.get())){
+            response.setMessage("Lesson does not belong to the course!");
+            response.setStatusCode(200);
+            return response;
+        }
+        lessonsInCourse.remove(existingLesson.get());
+        existingCourse.get().setLessonsInCourse(lessonsInCourse);
+        coursesRepository.save(existingCourse.get());
+        var lesson =existingLesson.get();
+        lesson.setCourse(null);
+        repository.delete(existingLesson.get());
+        response.setMessage("Lesson removed from course");
+        response.setStatusCode(200);
+        return response;
+    }
+
+    @Override
     public LessonDto updateLesson(Lesson lesson, Long lessonId) {
         return null;
     }

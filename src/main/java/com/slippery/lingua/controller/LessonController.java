@@ -18,4 +18,9 @@ public class LessonController {
     public ResponseEntity<LessonDto> createNewLesson(@RequestBody Lesson lesson, @RequestParam Long courseId) {
         return ResponseEntity.ok(service.createNewLesson(lesson, courseId));
     }
+
+    @PutMapping("/remove-from-course")
+    public ResponseEntity<LessonDto> removeLessonFromCourse(@RequestParam Long lessonId,@RequestParam Long courseId) {
+        return ResponseEntity.ok(service.removeLessonFromCourse(lessonId, courseId));
+    }
 }
