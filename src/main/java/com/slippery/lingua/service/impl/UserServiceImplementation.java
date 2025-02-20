@@ -6,6 +6,7 @@ import com.slippery.lingua.models.Courses;
 import com.slippery.lingua.models.Users;
 import com.slippery.lingua.repository.CoursesRepository;
 import com.slippery.lingua.repository.UserRepository;
+import com.slippery.lingua.service.JwtTokenService;
 import com.slippery.lingua.service.UsersService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,34 +25,38 @@ public class UserServiceImplementation implements UsersService {
     private final PasswordEncoder passwordEncoder =new BCryptPasswordEncoder(12);
     private final AuthenticationManager authenticationManager;
     private final CoursesRepository coursesRepository;
+    private final AuthenticationTokenService authenticationTokenService;
+    private final JwtTokenService jwtTokenService;
 
-    public UserServiceImplementation(UserRepository repository, AuthenticationManager authenticationManager, CoursesRepository coursesRepository) {
+    public UserServiceImplementation(UserRepository repository, AuthenticationManager authenticationManager, CoursesRepository coursesRepository, AuthenticationTokenService authenticationTokenService, JwtTokenService jwtTokenService) {
         this.repository = repository;
         this.authenticationManager = authenticationManager;
         this.coursesRepository = coursesRepository;
+        this.authenticationTokenService = authenticationTokenService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
     public UserDto register(Users userDetails) {
-//        Users existingByUsername =repository.findByUsername(userDetails.getUsername());
-//        Users existingByEmail =repository.findByEmail(userDetails.getEmail());
-//        UserDto response =new UserDto();
-//        if(existingByEmail !=null ||existingByUsername !=null){
-//            throw new UserAlreadyExists("User with the login details already exists");
-//        }
-//        int token =authenticationTokenService.generateVerificationToken();
-////        add logic to verify with token
-////        send token to email
-//
+        Users existingByUsername =repository.findByUsername(userDetails.getUsername());
+        Users existingByEmail =repository.findByEmail(userDetails.getEmail());
+        UserDto response =new UserDto();
+        if(existingByEmail !=null ||existingByUsername !=null){
+            throw new UserAlreadyExists("User with the login details already exists");
+        }
+        int token =authenticationTokenService.generateVerificationToken();
+        var jwtToken =jwtTokenService.generateJwtToken(userDetails.getUsername());
+//        add logic to verify with token
+//        send token to email
+
         userDetails.setPassword(passwordEncoder.encode(userDetails.getPassword()));
         userDetails.setCoursesEnrolled(new ArrayList<>());
         userDetails.setStreak(0L);
-        UserDto response =new UserDto();
-
         repository.save(userDetails);
         response.setMessage("User registered successfully");
         response.setStatusCode(200);
-        response.setAuthToken(12);
+        response.setAuthToken(token);
+        response.setJwtToken(jwtToken);
         return response;
     }
 

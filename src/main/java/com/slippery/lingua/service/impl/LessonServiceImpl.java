@@ -29,6 +29,7 @@ public class LessonServiceImpl implements LessonService {
             response.setStatusCode(404);
             return response;
         }
+        lessonDetails.setLessonQuiz(null);
         lessonDetails.setUpdatedOn(null);
         lessonDetails.setCourse(existingCourse.get());
         repository.save(lessonDetails);

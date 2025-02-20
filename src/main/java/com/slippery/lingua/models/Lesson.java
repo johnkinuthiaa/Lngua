@@ -25,4 +25,6 @@ public class Lesson {
     private LocalDateTime updatedOn;
     @ManyToOne
     private Courses course;
+    @OneToOne
+    private Quiz lessonQuiz;
 }
