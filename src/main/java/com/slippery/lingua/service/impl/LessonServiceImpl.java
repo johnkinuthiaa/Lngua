@@ -81,11 +81,17 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonDto findLessonById(Long lessonId) {
-        return null;
+        LessonDto response =new LessonDto();
+        Optional<Lesson> existingLesson =repository.findById(lessonId);
+        if(existingLesson.isEmpty()){
+            response.setStatusCode(404);
+            response.setMessage("lesson does not exist");
+            return response;
+        }
+        response.setLesson(existingLesson.get());
+        response.setMessage("Lesson with id "+lessonId);
+        response.setStatusCode(200);
+        return response;
     }
 
-    @Override
-    public LessonDto deleteLessonById(Long lessonId) {
-        return null;
-    }
 }

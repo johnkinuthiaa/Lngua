@@ -20,4 +20,5 @@ public class UserDto {
     private int authToken;
     private Courses course;
     private List<Courses> coursesList;
+    private String jwtToken;
 }

@@ -8,5 +8,4 @@ public interface LessonService {
     LessonDto removeLessonFromCourse(Long lessonId,Long courseId);
     LessonDto updateLesson(Lesson lesson,Long lessonId);
     LessonDto findLessonById(Long lessonId);
-    LessonDto deleteLessonById(Long lessonId);
 }

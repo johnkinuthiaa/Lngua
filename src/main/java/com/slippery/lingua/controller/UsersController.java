@@ -15,8 +15,12 @@ public class UsersController {
         this.service = service;
     }
     @PostMapping("/register")
-    public UserDto register(@RequestBody Users users){
-        return service.register(users);
+    public ResponseEntity<UserDto> register(@RequestBody Users users){
+        return ResponseEntity.ok(service.register(users));
+    }
+    @PostMapping("/re")
+    public Users add(@RequestBody Users users) {
+        return service.add(users);
     }
     @PostMapping("/enroll/course")
     public ResponseEntity<UserDto> enrollUserToCourse(@RequestParam Long UserId, @RequestParam Long courseId){

@@ -20,38 +20,46 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UsersService {
     private final UserRepository repository;
-    private final AuthenticationTokenService authenticationTokenService;
+
     private final PasswordEncoder passwordEncoder =new BCryptPasswordEncoder(12);
     private final AuthenticationManager authenticationManager;
     private final CoursesRepository coursesRepository;
 
-    public UserServiceImplementation(UserRepository repository, AuthenticationTokenService authenticationTokenService, AuthenticationManager authenticationManager, CoursesRepository coursesRepository) {
+    public UserServiceImplementation(UserRepository repository, AuthenticationManager authenticationManager, CoursesRepository coursesRepository) {
         this.repository = repository;
-        this.authenticationTokenService = authenticationTokenService;
         this.authenticationManager = authenticationManager;
         this.coursesRepository = coursesRepository;
     }
 
     @Override
     public UserDto register(Users userDetails) {
-        Users existingByUsername =repository.findByUsername(userDetails.getUsername());
-        Users existingByEmail =repository.findByEmail(userDetails.getEmail());
-        UserDto response =new UserDto();
-        if(existingByEmail !=null ||existingByUsername !=null){
-            throw new UserAlreadyExists("User with the login details already exists");
-        }
-        int token =authenticationTokenService.generateVerificationToken();
-//        add logic to verify with token
-//        send token to email
-
+//        Users existingByUsername =repository.findByUsername(userDetails.getUsername());
+//        Users existingByEmail =repository.findByEmail(userDetails.getEmail());
+//        UserDto response =new UserDto();
+//        if(existingByEmail !=null ||existingByUsername !=null){
+//            throw new UserAlreadyExists("User with the login details already exists");
+//        }
+//        int token =authenticationTokenService.generateVerificationToken();
+////        add logic to verify with token
+////        send token to email
+//
         userDetails.setPassword(passwordEncoder.encode(userDetails.getPassword()));
         userDetails.setCoursesEnrolled(new ArrayList<>());
         userDetails.setStreak(0L);
+        UserDto response =new UserDto();
+
         repository.save(userDetails);
         response.setMessage("User registered successfully");
         response.setStatusCode(200);
-        response.setAuthToken(token);
+        response.setAuthToken(12);
         return response;
+    }
+
+    @Override
+    public Users add(Users users) {
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
+        repository.save(users);
+        return users;
     }
 
     @Override

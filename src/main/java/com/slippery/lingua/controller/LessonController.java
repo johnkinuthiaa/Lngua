@@ -23,4 +23,8 @@ public class LessonController {
     public ResponseEntity<LessonDto> removeLessonFromCourse(@RequestParam Long lessonId,@RequestParam Long courseId) {
         return ResponseEntity.ok(service.removeLessonFromCourse(lessonId, courseId));
     }
+    @GetMapping("/{id}/get")
+    public ResponseEntity<LessonDto> findLessonById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findLessonById(id));
+    }
 }

@@ -2,9 +2,7 @@ package com.slippery.lingua.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 @Service
 public class AuthenticationTokenService {

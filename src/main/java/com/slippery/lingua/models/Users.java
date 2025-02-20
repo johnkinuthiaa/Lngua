@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,16 +20,14 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
-    private String email;
     private String password;
+    private String email;
     private String nativeLanguage;
-    @Lob
     private String interests;
     private LocalDateTime registeredOn =LocalDateTime.now();
     private Boolean isActive;
-    private Long streak;
+    private Long streak =0L;
     private String role;
     @ManyToMany
-    private List<Courses> coursesEnrolled;
-
+    private List<Courses> coursesEnrolled =new ArrayList<>();
 }
